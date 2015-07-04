@@ -26,8 +26,11 @@ fromList :: [a] -> List a
 fromList = foldr Elem Empty
 
 reverseLinkedList :: List a -> List a
-reverseLinkedList Empty = Empty
-reverseLinkedList (Elem x Empty) = Elem x Empty
-reverseLinkedList (Elem x l) = new (datum (reverseLinkedList l)) $ reverseLinkedList $ new x $ reverseLinkedList $ next $ reverseLinkedList l
+reverseLinkedList l = reverseWithTarget l Empty
+  where 
+    reverseWithTarget :: List a -> List a -> List a
+    reverseWithTarget Empty ls = ls
+    reverseWithTarget (Elem x ls') ls = reverseWithTarget ls' $ new x ls
+
 
 
