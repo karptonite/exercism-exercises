@@ -1,7 +1,7 @@
 module WordCount (wordCount)
 where
 import Data.List (foldl')
-import qualified Data.Map as Map (Map, empty, insertWith)
+import qualified Data.Map.Strict as Map (Map, empty, insertWith)
 import Data.Char (toLower, isAlphaNum)
 
 type Word' = String
