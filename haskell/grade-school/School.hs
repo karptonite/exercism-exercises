@@ -3,23 +3,22 @@ where
 import Data.List(insert)
 import qualified Data.Map as Map
 
-type StudentName = String
+type Student = String
 type GradeLevel = Int
-type Grade = ( GradeLevel, [StudentName] )
-type School = Map.Map GradeLevel [StudentName]
+type Grade = ( GradeLevel, [Student] )
+newtype School = School (Map.Map GradeLevel [Student])
 
 empty :: School
-empty = Map.empty
+empty = School Map.empty
 
-add :: GradeLevel -> StudentName -> School -> School
-add g s = Map.insertWith (\(a:_) b -> insert a b) g [s]
+add :: GradeLevel -> Student -> School -> School
+add gradeLevel student (School school) = 
+  School $ Map.insertWith insertStudent gradeLevel [student] school
+  where insertStudent :: [Student] -> [Student] -> [Student]
+        insertStudent (newStudent:_) = insert newStudent
 
 sorted :: School -> [Grade]
-sorted = Map.toList
+sorted (School school) = Map.toList school
 
-grade :: GradeLevel -> School -> [StudentName]
-grade g sch = extractList $ Map.lookup g sch
-  where 
-    extractList :: Maybe [a] -> [a]
-    extractList Nothing = []
-    extractList (Just xs) = xs
+grade :: GradeLevel -> School -> [Student]
+grade gradeLevel (School school) =  Map.findWithDefault [] gradeLevel school
