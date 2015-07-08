@@ -1,6 +1,10 @@
 module DNA (count, nucleotideCounts)
 where
-import qualified Data.Map as Map
+import qualified Data.Map.Strict as Map
+import Data.List (foldl')
+
+
+type ResidueMap = Map.Map Char Int
 
 residues :: String
 residues = "ATGC"
@@ -8,24 +12,20 @@ residues = "ATGC"
 isResidue :: Char -> Bool
 isResidue = (`elem` residues)
 
-findInvalidResidue :: String -> Char
-findInvalidResidue = foldl1( \acc x -> if not $ isResidue x then x else acc ) 
+checkResidue :: Char -> Bool
+checkResidue n
+  | isResidue n = True
+  | otherwise = error $ invalidResidueError n
 
-invalidResidueError :: String -> String
-invalidResidueError xs = "invalid nucleotide " ++ show (findInvalidResidue xs)
+invalidResidueError :: Char -> String
+invalidResidueError n = "invalid nucleotide " ++ show n
 
 count :: Char -> String -> Int
-count n xs
-  | isResidue n && all isResidue xs = foldl (\acc x -> if x == n then acc + 1 else acc) 0 xs
-  | not $ isResidue n = error $ "invalid nucleotide " ++ show n
-  | otherwise = error $ invalidResidueError xs
+count n = checkResidue n `seq` Map.findWithDefault 0 n . nucleotideCounts
 
-nucleotideCounts :: String -> Map.Map Char Int 
-nucleotideCounts xs
-  | all isResidue xs = Map.fromList $ foldl (\res -> (res, count res xs)) xs
-  | otherwise = error $ invalidResidueError xs
-
-characterCounts xs = Map.fromlist $ map (\character -> (character, ))
-
-
-
+nucleotideCounts :: String -> ResidueMap
+nucleotideCounts =  foldl' insertResidue emptyMap 
+  where
+    insertResidue :: ResidueMap -> Char -> ResidueMap
+    insertResidue acc res = checkResidue res `seq` Map.insertWith (+) res 1 acc 
+    emptyMap = foldl' (\acc res -> Map.insert res 0 acc) Map.empty residues
