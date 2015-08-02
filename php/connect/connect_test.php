@@ -129,4 +129,21 @@ class ConnectTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(null, resultFor($this->makeBoard($lines)));
     }
+
+    /**
+     * @depends testSpiralBlackWins
+     * @depends testSpiralNobodyWins
+     */
+    public function testIllegalDiagonalNobodyWins()
+    {
+        $lines = array(
+            "X O . .",
+            " O X X X",
+            "  O X O .",
+            "   . O X .",
+            "    X X O O"
+        );
+
+        $this->assertEquals(null, resultFor($this->makeBoard($lines)));
+    }
 }
