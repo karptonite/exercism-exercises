@@ -3,11 +3,8 @@ where
 import qualified Data.Map as Map
 
 numerals :: Int -> String
-numerals = concat . convertToRoman []
-
-convertToRoman :: [String] -> Int -> [String]
-convertToRoman rs 0 = rs
-convertToRoman rs n = convertToRoman (rs ++ [r]) $ n - num
+numerals 0 = ""
+numerals n = r ++ numerals (n - num)
   where
     (num, r) = nextRoman n
 
