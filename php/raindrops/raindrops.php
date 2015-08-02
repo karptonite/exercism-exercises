@@ -7,7 +7,7 @@ function raindrops( $value )
 
 class Rainmaker
 {
-    static $rain = [
+    static $sounds = [
         'Pling' => 3,
         'Plang' => 5,
         'Plong' => 7 
@@ -20,10 +20,16 @@ class Rainmaker
     }
 
     public function rain(){
-        return implode ( array_keys( array_filter( static::$rain, [$this, "callback"] ) ) ) ?: (string)$this->value;
+        return implode ( $this->getSounds() ) ?: (string)$this->value;
     }
 
-    private function callback( $divisor ) {
+    private function getSounds()
+    {
+         return array_keys( array_filter( static::$sounds, [$this, "isFactor"] ) ); 
+    }
+
+    private function isFactor( $divisor )
+    {
         return !( $this->value % $divisor );
     }
 }
