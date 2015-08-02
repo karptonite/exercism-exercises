@@ -10,7 +10,11 @@ class Clock
     }
 
     public function __toString() {
-        return str_pad( $this->hours, 2, '0', STR_PAD_LEFT ) . ":" . str_pad( $this->minutes, 2, '0', STR_PAD_LEFT );
+        return $this->pad( $this->hours ) . ':' . $this->pad( $this->minutes );
+    }
+
+    private function pad( $num ){
+        return str_pad( $num, 2, '0', STR_PAD_LEFT );
     }
 
     public function add( $minutes ) {
